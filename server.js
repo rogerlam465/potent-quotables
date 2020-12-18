@@ -4,23 +4,47 @@ const { buildSchema, graphql } = require('graphql');
 
 const { data } = require('./mock_data');
 
+// let's pretend that we're building a leads dashboard for sales
+// so we should break down the data by industry or job title
+// but we should display the relevant people for those industries
+
 // initial schema using buildSchema
 
 const schema = buildSchema(`
   type Query {
-    hello: String
+    user(id: Int!): User,
+    companies: [Company]
+  },
+  type User {
+    first_name: String,
+    last_name: String,
+    email: String,
+    job_title: String,
+    id: Int!,
+  },
+  type Company {
+    company_name: String!,
   }
 `);
 
-
-const helloWorld = () => {
-  let hello = "hello";
-  let world = "world!";
-  return hello + world;
+const getUser = (args) => {
+  let targetUser = args.id;
+  return data.filter(user => user.id === targetUser)[0];
 };
 
+const getCompanies = () => {
+  let allCompanies = [];
+  data.map(company => {
+    if (company.company_name && !allCompanies.includes(company.company_name)) {
+      allCompanies.push(company);
+    }
+  });
+  return allCompanies;
+}
+
 const root = {
-  hello: helloWorld,
+  user: getUser,
+  companies: getCompanies,
 };
 
 
