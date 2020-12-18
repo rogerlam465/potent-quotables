@@ -2,6 +2,8 @@ const express = require('express');
 const { graphqlHTTP } = require('express-graphql');
 const { buildSchema, graphql } = require('graphql');
 
+const { data } = require('./mock_data');
+
 // initial schema using buildSchema
 
 const schema = buildSchema(`
@@ -10,11 +12,17 @@ const schema = buildSchema(`
   }
 `);
 
-const root = {
-  hello: () => {
-    return 'Hello world!';
-  },
+
+const helloWorld = () => {
+  let hello = "hello";
+  let world = "world!";
+  return hello + world;
 };
+
+const root = {
+  hello: helloWorld,
+};
+
 
 const app = express();
 
